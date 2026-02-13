@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="color:#6a0dad;">ATS Scan Result</h2>
+
+<div style="margin-top:30px;">
+
+    <!-- Score -->
+    <h3>Match Score</h3>
+
+    <div style="background:#eee; border-radius:12px; overflow:hidden; height:30px;">
+        <div style="width:{{ score }}%; background:#6a0dad; color:white; text-align:center; line-height:30px;">
+            {{ score }}%
+        </div>
+    </div>
+
+</div>
+
+<div style="margin-top:40px;">
+    <h3>Update your CV with these keywords</h3>
+
+    <ul>
+        {% for kw in missing_keywords %}
+            <li>{{ kw }}</li>
+        {% empty %}
+            <li>No major keywords missing</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div style="margin-top:40px;">
+    <a href="/" style="background:#6a0dad; color:white; padding:10px 18px; border-radius:8px; text-decoration:none;">
+        Scan Another Resume
+    </a>
+
+</div>
+
+{% endblock %}

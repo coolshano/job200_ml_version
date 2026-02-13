@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 style="color:#6a0dad;">Recruiter Dashboard</h1>
+
+<!-- FILTER BAR -->
+<form method="GET" class="filter-bar">
+    <input type="text" name="q" placeholder="Search Name / Email">
+
+    <input type="number" name="score" placeholder="Minimum Score">
+
+    <input type="text" name="job" placeholder="Job Title" value="{{ job_title }}">
+
+    <button type="submit">Filter</button>
+</form>
+
+<!-- TABLE -->
+<table class="resume-table">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>ATS Score</th>
+        <th>Resume</th>
+    </tr>
+
+    {% for r in resumes %}
+    <tr>
+        <td>{{ r.name }}</td>
+        <td>{{ r.email }}</td>
+        <td>
+            <div class="progress">
+                <div class="progress-bar" style="width:{{ r.score }}%;">
+                    {{ r.score }}%
+                </div>
+            </div>
+        </td>
+        <td>
+            <a class="download-btn" href="{{ r.resume_file.url }}">Download</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<style>
+.filter-bar{
+    display:flex;
+    gap:15px;
+    margin:20px 0 30px 0;
+}
+
+.filter-bar input{
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.filter-bar button{
+    background:#6a0dad;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.resume-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.resume-table th{
+    background:#6a0dad;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+.resume-table td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+}
+
+.progress{
+    background:#eee;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    background:#6a0dad;
+    color:white;
+    padding:4px;
+    text-align:center;
+}
+
+.download-btn{
+    background:#6a0dad;
+    color:white;
+    padding:6px 12px;
+    border-radius:6px;
+    text-decoration:none;
+}
+</style>
+
+{% endblock %}

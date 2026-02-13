@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="
+    color:#6a0dad;
+    text-align:center;
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:30px;">
+    Make your resume ATS friendly
+</h2>
+
+<form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+    {% csrf_token %}
+
+    <label>Name</label>
+    <input type="text" name="name" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Resume</label>
+    <input type="file" name="resume" accept="application/pdf">
+    <small>Please upload PDF and file size should be less then 5MB</small>
+
+    <label>Job Title</label>
+    <input type="text" name="job_title" required>
+
+    <label>Paste Your Job Description</label>
+    <textarea name="jd" rows="6" required></textarea>
+
+    <button type="submit">Scan Resume</button>
+</form>
+
+<!-- Loader -->
+<div id="loader" style="display:none; margin-top:25px;">
+    <p><strong>Scanning resume... please wait</strong></p>
+
+    <div style="background:#eee; border-radius:10px; overflow:hidden;">
+        <div id="progressBar" style="width:0%; background:#6a0dad; color:white; padding:6px; text-align:center;">
+            0%
+        </div>
+    </div>
+</div>
+
+<style>
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+label {
+    font-weight: 600;
+}
+
+input, textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+button {
+    background: #6a0dad;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 200px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #4b0082;
+}
+</style>
+
+<script>
+function showLoader(){
+    document.getElementById("loader").style.display = "block";
+
+    let width = 0;
+    let bar = document.getElementById("progressBar");
+
+    let interval = setInterval(function(){
+        if(width >= 100){
+            clearInterval(interval);
+        } else {
+            width += 1;
+            bar.style.width = width + "%";
+            bar.innerHTML = width + "%";
+        }
+    }, 200);
+}
+</script>
+
+{% endblock %}
