@@ -10,7 +10,7 @@
     Make your resume ATS friendly
 </h2>
 
-<form method="POST" enctype="multipart/form-data" onsubmit="showLoader()">
+<form method="POST" enctype="multipart/form-data" id="resumeForm">
     {% csrf_token %}
 
     <label>Name</label>
@@ -20,14 +20,24 @@
     <input type="email" name="email" required>
 
     <label>Resume</label>
-    <input type="file" name="resume" accept="application/pdf">
-    <small>Please upload PDF and file size should be less then 5MB</small>
 
-    <label>Job Title</label>
+    <div id="drop-area">
+        <p><strong>Drag & Drop your CV here</strong></p>
+        <p>or click to upload</p>
+        <input type="file" id="fileElem" name="resume" accept="application/pdf" required>
+    </div>
+
+    <small>Please upload PDF and file size should be less than 5MB</small>
+
+    <label>Job Title you are applying for</label>
     <input type="text" name="job_title" required>
 
     <label>Paste Your Job Description</label>
     <textarea name="jd" rows="6" required></textarea>
+
+    <!-- Hidden Fields -->
+    <input type="hidden" name="experience_years" id="hiddenExperience">
+    <input type="hidden" name="expected_salary" id="hiddenSalary">
 
     <button type="submit">Scan Resume</button>
 </form>
@@ -43,6 +53,24 @@
     </div>
 </div>
 
+<!-- Experience & Salary Modal -->
+<div id="experienceModal" class="modal">
+  <div class="modal-content">
+    <h4>📡 Enter additional info...</h4>
+
+    <label>Years of Experience</label>
+    <input type="number" id="experienceInput" min="0" required>
+
+    <label>Expected Salary (LKR)</label>
+    <input type="number" id="salaryInput" min="0" required>
+
+    <div style="margin-top:20px; display:flex; gap:10px;">
+        <button type="button" onclick="submitWithDetails()">Continue</button>
+        <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <style>
 form {
     display: flex;
@@ -51,9 +79,7 @@ form {
     margin-top: 20px;
 }
 
-label {
-    font-weight: 600;
-}
+label { font-weight:600; }
 
 input, textarea {
     padding: 10px;
@@ -62,39 +88,138 @@ input, textarea {
     width: 100%;
 }
 
-button {
-    background: #6a0dad;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    width: 200px;
-    cursor: pointer;
+/* Drag Drop */
+#drop-area{
+    border:2px dashed #6a0dad;
+    border-radius:12px;
+    padding:40px;
+    text-align:center;
+    background:#faf5ff;
+    cursor:pointer;
+}
+#drop-area.highlight{
+    background:#f1e6ff;
 }
 
-button:hover {
-    background: #4b0082;
+button{
+    background:#6a0dad;
+    color:white;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    font-size:16px;
+    width:200px;
+    cursor:pointer;
+}
+button:hover{ background:#4b0082; }
+
+/* Modal */
+.modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal-content{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    width:400px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.cancel-btn{
+    background:#ccc;
+    color:black;
+}
+.cancel-btn:hover{
+    background:#aaa;
 }
 </style>
 
 <script>
-function showLoader(){
-    document.getElementById("loader").style.display = "block";
+// FORM INTERCEPT
+let form = document.getElementById("resumeForm")
 
-    let width = 0;
-    let bar = document.getElementById("progressBar");
+form.addEventListener("submit", function(e){
+    e.preventDefault()
+    openModal()
+})
+
+function openModal(){
+    document.getElementById("experienceModal").style.display = "flex"
+}
+
+function closeModal(){
+    document.getElementById("experienceModal").style.display = "none"
+}
+
+function submitWithDetails(){
+
+    let exp = document.getElementById("experienceInput").value
+    let salary = document.getElementById("salaryInput").value
+
+    if(!exp || !salary){
+        alert("Please fill all fields")
+        return
+    }
+
+    document.getElementById("hiddenExperience").value = exp
+    document.getElementById("hiddenSalary").value = salary
+
+    closeModal()
+    showLoader()
+    form.submit()
+}
+
+// LOADER
+function showLoader(){
+    document.getElementById("loader").style.display = "block"
+
+    let width = 0
+    let bar = document.getElementById("progressBar")
 
     let interval = setInterval(function(){
         if(width >= 100){
-            clearInterval(interval);
+            clearInterval(interval)
         } else {
-            width += 1;
-            bar.style.width = width + "%";
-            bar.innerHTML = width + "%";
+            width += 1
+            bar.style.width = width + "%"
+            bar.innerHTML = width + "%"
         }
-    }, 200);
+    }, 60)
 }
+
+// DRAG & DROP
+let dropArea = document.getElementById("drop-area")
+let fileInput = document.getElementById("fileElem")
+
+;["dragenter","dragover"].forEach(eventName=>{
+    dropArea.addEventListener(eventName, e=>{
+        e.preventDefault()
+        dropArea.classList.add("highlight")
+    })
+})
+
+;["dragleave","drop"].forEach(eventName=>{
+    dropArea.addEventListener(eventName, e=>{
+        e.preventDefault()
+        dropArea.classList.remove("highlight")
+    })
+})
+
+dropArea.addEventListener("drop", e=>{
+    fileInput.files = e.dataTransfer.files
+})
 </script>
 
 {% endblock %}

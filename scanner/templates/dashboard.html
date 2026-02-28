@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1 style="color:#6a0dad;">Recruiter Dashboard</h1>
+<div class="dashboard-container">
+
+<h1 class="title">Recruiter Dashboard</h1>
+
 
 <!-- FILTER BAR -->
 <form method="GET" class="filter-bar">
     <input type="text" name="q" placeholder="Search Name / Email">
-
     <input type="number" name="score" placeholder="Minimum Score">
-
     <input type="text" name="job" placeholder="Job Title" value="{{ job_title }}">
-
+    <input type="text" name="skill" placeholder="Missing Skill" value="{{ skill }}">
     <button type="submit">Filter</button>
 </form>
 
@@ -20,6 +21,7 @@
         <th>Name</th>
         <th>Email</th>
         <th>ATS Score</th>
+        <th>Missing Skills</th>
         <th>Resume</th>
     </tr>
 
@@ -27,6 +29,7 @@
     <tr>
         <td>{{ r.name }}</td>
         <td>{{ r.email }}</td>
+
         <td>
             <div class="progress">
                 <div class="progress-bar" style="width:{{ r.score }}%;">
@@ -34,6 +37,15 @@
                 </div>
             </div>
         </td>
+
+        <td>
+            {% if r.missing_keywords %}
+                {{ r.missing_keywords|join:", " }}
+            {% else %}
+                None
+            {% endif %}
+        </td>
+
         <td>
             <a class="download-btn" href="{{ r.resume_file.url }}">Download</a>
         </td>
@@ -41,7 +53,42 @@
     {% endfor %}
 </table>
 
+</div>
+
 <style>
+.dashboard-container{
+    max-width:1100px;
+    margin:auto;
+    background:white;
+    padding:35px;
+    border-radius:14px;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+}
+
+.title{
+    color:#6a0dad;
+    margin-bottom:20px;
+}
+
+.section-title{
+    margin-top:10px;
+}
+
+.top-candidates{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.candidate-card{
+    background:#fafafa;
+    padding:15px 20px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    min-width:220px;
+}
+
 .filter-bar{
     display:flex;
     gap:15px;

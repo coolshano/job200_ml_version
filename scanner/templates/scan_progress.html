@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="text-align:center; color:#6a0dad;">
+Scanning Resume...
+</h2>
+
+<div style="background:#eee; border-radius:12px; overflow:hidden;">
+    <div id="progressBar"
+         style="width:20%; background:#6a0dad; color:white; padding:10px; text-align:center;">
+         Processing...
+    </div>
+</div>
+
+<script>
+let resumeId = "{{ resume_id }}";
+
+function checkStatus(){
+    fetch("/scan-status/" + resumeId + "/")
+    .then(res => res.json())
+    .then(data => {
+
+        let bar = document.getElementById("progressBar")
+
+        if(data.status === "uploading"){
+            bar.style.width = "10%"
+            bar.innerHTML = "Uploading..."
+        }
+        else if(data.status === "extracting_text"){
+            bar.style.width = "30%"
+            bar.innerHTML = "Extracting text..."
+        }
+        else if(data.status === "matching_keywords"){
+            bar.style.width = "60%"
+            bar.innerHTML = "Matching keywords..."
+        }
+        else if(data.status === "calculating_score"){
+            bar.style.width = "80%"
+            bar.innerHTML = "Calculating score..."
+        }
+        else if(data.status === "completed"){
+            bar.style.width = "100%"
+            bar.innerHTML = "Completed - Score: " + data.score + "%"
+            clearInterval(poller)
+
+            setTimeout(()=>{
+                window.location.href = "/result/" + resumeId + "/";
+            }, 1500)
+        }
+    })
+}
+
+let poller = setInterval(checkStatus, 1000);
+</script>
+
+{% endblock %}

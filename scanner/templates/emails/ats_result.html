@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f6f4fb;font-family:Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
+<tr>
+<td align="center">
+
+<table width="600" cellpadding="0" cellspacing="0"
+       style="background:white;border-radius:12px;padding:30px;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+
+<tr>
+<td align="center">
+    <h2 style="color:#6a0dad;margin:0 0 20px 0;">
+        ATS Resume Scan Result
+    </h2>
+</td>
+</tr>
+
+<tr>
+<td>
+    <p>Hello <strong>{{ name }}</strong>,</p>
+    <p>Your resume has been successfully scanned. Below are your results:</p>
+</td>
+</tr>
+
+<!-- MATCH SCORE -->
+<tr>
+<td style="padding-top:20px;">
+    <h3 style="color:#6a0dad;margin-bottom:10px;">Match Score</h3>
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="background:#eee;border-radius:20px;height:28px;">
+                <table width="{{ score }}%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center"
+                            style="
+                                height:28px;
+                                color:white;
+                                font-weight:bold;
+                                border-radius:20px;
+                                {% if score < 50 %}
+                                    background:#dc3545;
+                                {% elif score < 75 %}
+                                    background:#f39c12;
+                                {% else %}
+                                    background:#28a745;
+                                {% endif %}
+                            ">
+                            {{ score|floatformat:2 }}%
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Match Label -->
+    <p style="margin-top:10px;font-weight:bold;">
+        {% if score < 50 %}
+            Weak Match
+        {% elif score < 75 %}
+            Moderate Match
+        {% else %}
+            Strong Match
+        {% endif %}
+    </p>
+
+</td>
+</tr>
+
+<!-- RECOMMENDATIONS -->
+<tr>
+<td style="padding-top:25px;">
+    <h3 style="color:#6a0dad;margin-bottom:10px;">
+        Recommendations to Improve
+    </h3>
+
+    <ul style="line-height:1.8;">
+
+    {% if recommendations %}
+        {% for rec in recommendations %}
+            <li>
+                <strong>{{ rec.priority }}</strong> —
+                {{ rec.message }}
+                <span style="color:#6a0dad;">({{ rec.impact }})</span>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li>Your resume is well optimized for this job.</li>
+    {% endif %}
+
+</ul>
+</td>
+</tr>
+
+<!-- MISSING KEYWORDS -->
+<tr>
+<td style="padding-top:25px;">
+    <h3 style="color:#6a0dad;margin-bottom:10px;">
+        Missing Keywords
+    </h3>
+
+    <ul style="padding-left:18px;margin:0;line-height:1.6;">
+        {% for kw in missing_keywords %}
+            <li>{{ kw }}</li>
+        {% empty %}
+            <li>No major keywords missing</li>
+        {% endfor %}
+    </ul>
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td style="padding-top:30px;font-size:12px;color:#888;text-align:center;">
+    © 2026 JOB200 ATS Platform<br>
+    This report was generated automatically by our ATS analysis engine.
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

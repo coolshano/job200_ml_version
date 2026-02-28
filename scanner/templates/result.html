@@ -1,37 +1,137 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2 style="color:#6a0dad;">ATS Scan Result</h2>
+<div style="max-width:900px;margin:40px auto;">
 
-<div style="margin-top:30px;">
+    <!-- Header -->
+    <h2 style="color:#6a0dad;font-size:28px;font-weight:700;">
+        ATS Scan Result
+    </h2>
 
-    <!-- Score -->
-    <h3>Match Score</h3>
+    <p style="color:#6a0dad;font-weight:600;">
+        Please check your mailbox for your receipt
+    </p>
 
-    <div style="background:#eee; border-radius:12px; overflow:hidden; height:30px;">
-        <div style="width:{{ score }}%; background:#6a0dad; color:white; text-align:center; line-height:30px;">
-            {{ score }}%
+    <!-- Score Card -->
+    <div style="
+        margin-top:30px;
+        background:white;
+        padding:30px;
+        border-radius:16px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    ">
+
+        <h3 style="margin-bottom:15px;">Match Score</h3>
+
+        <div style="
+            background:#eee;
+            border-radius:30px;
+            overflow:hidden;
+            height:35px;
+        ">
+            <div style="
+                width:{{ score }}%;
+                {% if score < 50 %}
+                    background:#dc3545;
+                {% elif score < 75 %}
+                    background:#f39c12;
+                {% else %}
+                    background:#28a745;
+                {% endif %}
+                color:white;
+                text-align:center;
+                line-height:35px;
+                font-weight:600;
+                transition:0.5s ease;
+            ">
+                {{ score|floatformat:2 }}%
+            </div>
         </div>
+
+        <!-- Score Label -->
+        <div style="margin-top:12px;font-weight:600;">
+            {% if score < 50 %}
+                Weak Match
+            {% elif score < 75 %}
+                Moderate Match
+            {% else %}
+                Strong Match
+            {% endif %}
+        </div>
+
     </div>
 
-</div>
+    <!-- Recommendations -->
+    <div style="
+        margin-top:30px;
+        background:white;
+        padding:30px;
+        border-radius:16px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    ">
 
-<div style="margin-top:40px;">
-    <h3>Update your CV with these keywords</h3>
+        <h3 style="margin-bottom:15px;">
+            Recommendations to Increase Your ATS Score
+        </h3>
 
-    <ul>
-        {% for kw in missing_keywords %}
-            <li>{{ kw }}</li>
-        {% empty %}
-            <li>No major keywords missing</li>
-        {% endfor %}
-    </ul>
-</div>
+        <ul style="line-height:1.8;">
 
-<div style="margin-top:40px;">
-    <a href="/" style="background:#6a0dad; color:white; padding:10px 18px; border-radius:8px; text-decoration:none;">
-        Scan Another Resume
-    </a>
+            {% if recommendations %}
+                {% for rec in recommendations %}
+                    <li>
+                        <strong>{{ rec.priority }}</strong> —
+                        {{ rec.message }}
+                        <span style="color:#6a0dad;">({{ rec.impact }})</span>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>Your resume is well optimized for this job.</li>
+            {% endif %}
+
+</ul>
+
+    </div>
+
+    <!-- Missing Keywords -->
+    <div style="
+        margin-top:30px;
+        background:white;
+        padding:30px;
+        border-radius:16px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.08);
+    ">
+
+        <h3 style="margin-bottom:15px;">
+            Missing Keywords
+        </h3>
+
+        <ul style="columns:2; line-height:1.8;">
+
+            {% for kw in missing_keywords %}
+                <li>{{ kw }}</li>
+            {% empty %}
+                <li>No major keywords missing</li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+    <!-- CTA -->
+    <div style="margin-top:40px;text-align:center;">
+
+        <a href="/" style="
+            background:#6a0dad;
+            color:white;
+            padding:12px 22px;
+            border-radius:10px;
+            text-decoration:none;
+            font-weight:600;
+        ">
+            Scan Another Resume
+        </a>
+
+    </div>
 
 </div>
 
