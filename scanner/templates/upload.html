@@ -7,8 +7,36 @@
     font-size:28px;
     font-weight:700;
     margin-bottom:30px;">
-    Make your resume ATS friendly
+    Make your resume ATS friendly for free
 </h2>
+
+<!-- Resume Counter -->
+<div style="
+    width:100%;
+    display:flex;
+    justify-content:center;
+    margin-bottom:25px;
+">
+    <div style="
+        padding:12px 22px;
+        background:rgba(106,13,173,0.08);
+        border-radius:14px;
+        font-weight:600;
+        font-size:18px;
+        color:#444;
+        display:flex;
+        align-items:center;
+        gap:8px;
+    ">
+        📄
+        <span id="resumeCounter"
+              data-count="{{ total_scanned }}"
+              style="color:#6a0dad; font-size:24px; font-weight:800;">
+            {{ total_scanned }}
+        </span>
+        <span>resumes scanned so far</span>
+    </div>
+</div>
 
 <form method="POST" enctype="multipart/form-data" id="resumeForm">
     {% csrf_token %}
@@ -35,7 +63,6 @@
     <label>Paste Your Job Description</label>
     <textarea name="jd" rows="6" required></textarea>
 
-    <!-- Hidden Fields -->
     <input type="hidden" name="experience_years" id="hiddenExperience">
     <input type="hidden" name="expected_salary" id="hiddenSalary">
 
@@ -45,7 +72,6 @@
 <!-- Loader -->
 <div id="loader" style="display:none; margin-top:25px;">
     <p><strong>Scanning resume... please wait</strong></p>
-
     <div style="background:#eee; border-radius:10px; overflow:hidden;">
         <div id="progressBar" style="width:0%; background:#6a0dad; color:white; padding:6px; text-align:center;">
             0%
@@ -88,7 +114,6 @@ input, textarea {
     width: 100%;
 }
 
-/* Drag Drop */
 #drop-area{
     border:2px dashed #6a0dad;
     border-radius:12px;
@@ -113,7 +138,6 @@ button{
 }
 button:hover{ background:#4b0082; }
 
-/* Modal */
 .modal{
     display:none;
     position:fixed;
@@ -144,82 +168,119 @@ button:hover{ background:#4b0082; }
 .cancel-btn:hover{
     background:#aaa;
 }
+
+#resumeCounter {
+    transition: transform 0.3s ease;
+}
+#resumeCounter:hover {
+    transform: scale(1.1);
+}
 </style>
 
 <script>
+// COUNTER ANIMATION
+document.addEventListener("DOMContentLoaded", function(){
+
+    const counter = document.getElementById("resumeCounter");
+    if(!counter) return;
+
+    const target = parseInt(counter.dataset.count);
+    if(!target) return;
+
+    let current = 0;
+    const duration = 1000;
+    const steps = 60;
+    const increment = target / steps;
+    const intervalTime = duration / steps;
+
+    counter.innerText = "0";
+
+    const interval = setInterval(() => {
+        current += increment;
+
+        if(current >= target){
+            counter.innerText = target.toLocaleString();
+            clearInterval(interval);
+        } else {
+            counter.innerText = Math.floor(current).toLocaleString();
+        }
+
+    }, intervalTime);
+});
+
 // FORM INTERCEPT
-let form = document.getElementById("resumeForm")
+let form = document.getElementById("resumeForm");
 
 form.addEventListener("submit", function(e){
-    e.preventDefault()
-    openModal()
-})
+    e.preventDefault();
+    openModal();
+});
 
 function openModal(){
-    document.getElementById("experienceModal").style.display = "flex"
+    document.getElementById("experienceModal").style.display = "flex";
 }
 
 function closeModal(){
-    document.getElementById("experienceModal").style.display = "none"
+    document.getElementById("experienceModal").style.display = "none";
 }
 
 function submitWithDetails(){
 
-    let exp = document.getElementById("experienceInput").value
-    let salary = document.getElementById("salaryInput").value
+    let exp = document.getElementById("experienceInput").value;
+    let salary = document.getElementById("salaryInput").value;
 
     if(!exp || !salary){
-        alert("Please fill all fields")
-        return
+        alert("Please fill all fields");
+        return;
     }
 
-    document.getElementById("hiddenExperience").value = exp
-    document.getElementById("hiddenSalary").value = salary
+    document.getElementById("hiddenExperience").value = exp;
+    document.getElementById("hiddenSalary").value = salary;
 
-    closeModal()
-    showLoader()
-    form.submit()
+    closeModal();
+    showLoader();
+    form.submit();
 }
 
 // LOADER
 function showLoader(){
-    document.getElementById("loader").style.display = "block"
+    document.getElementById("loader").style.display = "block";
 
-    let width = 0
-    let bar = document.getElementById("progressBar")
+    let width = 0;
+    let bar = document.getElementById("progressBar");
 
     let interval = setInterval(function(){
         if(width >= 100){
-            clearInterval(interval)
+            clearInterval(interval);
         } else {
-            width += 1
-            bar.style.width = width + "%"
-            bar.innerHTML = width + "%"
+            width += 1;
+            bar.style.width = width + "%";
+            bar.innerHTML = width + "%";
         }
-    }, 60)
+    }, 60);
 }
 
 // DRAG & DROP
-let dropArea = document.getElementById("drop-area")
-let fileInput = document.getElementById("fileElem")
+let dropArea = document.getElementById("drop-area");
+let fileInput = document.getElementById("fileElem");
 
-;["dragenter","dragover"].forEach(eventName=>{
+["dragenter","dragover"].forEach(eventName=>{
     dropArea.addEventListener(eventName, e=>{
-        e.preventDefault()
-        dropArea.classList.add("highlight")
-    })
-})
+        e.preventDefault();
+        dropArea.classList.add("highlight");
+    });
+});
 
-;["dragleave","drop"].forEach(eventName=>{
+["dragleave","drop"].forEach(eventName=>{
     dropArea.addEventListener(eventName, e=>{
-        e.preventDefault()
-        dropArea.classList.remove("highlight")
-    })
-})
+        e.preventDefault();
+        dropArea.classList.remove("highlight");
+    });
+});
 
 dropArea.addEventListener("drop", e=>{
-    fileInput.files = e.dataTransfer.files
-})
+    fileInput.files = e.dataTransfer.files;
+});
 </script>
 
 {% endblock %}

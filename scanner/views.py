@@ -30,7 +30,12 @@ from decimal import Decimal
 
 
 
+from django.db.models import Count
+from decimal import Decimal
+from .models import Resume
+
 def upload_resume(request):
+
     if request.method == "POST":
 
         experience = request.POST.get("experience_years")
@@ -52,7 +57,12 @@ def upload_resume(request):
 
         return redirect("scan_progress", id=resume.id)
 
-    return render(request, "upload.html")
+    # 👇 COUNT ONLY COMPLETED SCANS (recommended)
+    total_scanned = Resume.objects.filter(status="completed").count()
+
+    return render(request, "upload.html", {
+        "total_scanned": total_scanned
+    })
 
 
 @login_required(login_url='/accounts/login/')
