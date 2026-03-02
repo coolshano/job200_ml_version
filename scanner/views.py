@@ -47,7 +47,7 @@ def upload_resume(request):
             resume_file=request.FILES.get("resume"),
             job_title=request.POST.get("job_title"),
             job_description=request.POST.get("jd"),
-            experience_years=int(experience) if experience else None,
+            experience_years=float(experience) if experience else None,
             expected_salary=Decimal(salary) if salary else None,
             status="uploading"
         )

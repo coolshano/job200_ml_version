@@ -42,10 +42,7 @@ class Resume(models.Model):
         blank=True
     )
 
-    experience_years = models.PositiveIntegerField(
-        null=True,
-        blank=True
-    )
+    experience_years = models.FloatField(null=True, blank=True)
 
     expected_salary = models.DecimalField(
         max_digits=12,
