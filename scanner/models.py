@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 import os
+from django.contrib.auth.models import User
 
 def validate_pdf(file):
 
@@ -52,4 +53,11 @@ class Resume(models.Model):
     )
     score_breakdown = models.JSONField(null=True, blank=True)
     status = models.CharField(max_length=30, default="uploading")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class GeneratedCV(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    score = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)

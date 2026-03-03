@@ -28,7 +28,9 @@ import os
 from django.core.mail import EmailMessage
 from decimal import Decimal
 
-
+from django.http import JsonResponse
+from .cv_generator import generate_and_optimize_cv
+from .tasks import generate_and_email_cv
 
 from django.db.models import Count
 from decimal import Decimal
@@ -192,3 +194,56 @@ Job200
 
 def cv_form_view(request):
     return render(request, "generate_cv.html")
+
+
+
+#Generate CV using AI
+
+def generate_cv_view(request):
+
+    if request.method == "POST":
+
+        data = {
+            "name": request.POST.get("name"),
+            "role": request.POST.get("role"),
+            "experience": request.POST.get("experience"),
+            "skills": request.POST.get("skills"),
+            "projects": request.POST.get("projects"),
+        }
+
+        job_description = request.POST.get("job_description")
+
+        cv_text, score = generate_and_optimize_cv(data, job_description)
+
+        return render(request, "result.html", {
+            "cv": cv_text,
+            "score": score
+        })
+    
+
+def test_cv(request):
+
+    if request.method == "POST":
+
+        data = {
+            "name": request.POST.get("name"),
+            "role": request.POST.get("role"),
+            "experience": request.POST.get("experience"),
+            "skills": request.POST.get("skills"),
+            "education": request.POST.get("education"),
+            "certifications": request.POST.get("certifications"),
+            "projects": request.POST.get("projects"),
+            "achievements": request.POST.get("achievements"),
+        }
+
+        job_description = request.POST.get("job_description")
+        user_email = request.POST.get("email")
+
+        # Send async task
+        generate_and_email_cv.delay(data, job_description, user_email)
+
+        return render(request, "test_cv.html", {
+            "message": f"Your resume is being generated and will be sent to {user_email} shortly."
+        })
+
+    return render(request, "test_cv.html")

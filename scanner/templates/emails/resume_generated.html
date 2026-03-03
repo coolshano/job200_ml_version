@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f6f4fb;font-family:Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:30px 0;">
+<tr>
+<td align="center">
+
+<table width="600" cellpadding="0" cellspacing="0"
+       style="background:white;border-radius:12px;padding:30px;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+
+<tr>
+<td align="center">
+    <h2 style="color:#6a0dad;margin:0 0 20px 0;">
+        Your AI Resume is Ready 🚀
+    </h2>
+</td>
+</tr>
+
+<tr>
+<td>
+    <p>Hello <strong>{{ name }}</strong>,</p>
+    <p>Your resume has been successfully generated and optimized for ATS systems.</p>
+</td>
+</tr>
+
+<!-- ATS SCORE -->
+<tr>
+<td style="padding-top:20px;">
+    <h3 style="color:#6a0dad;margin-bottom:10px;">ATS Optimization Score</h3>
+
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="background:#eee;border-radius:20px;height:28px;">
+                <table width="{{ score }}%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center"
+                            style="
+                                height:28px;
+                                color:white;
+                                font-weight:bold;
+                                border-radius:20px;
+                                {% if score < 50 %}
+                                    background:#dc3545;
+                                {% elif score < 75 %}
+                                    background:#f39c12;
+                                {% else %}
+                                    background:#28a745;
+                                {% endif %}
+                            ">
+                            {{ score }}%
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <p style="margin-top:10px;font-weight:bold;">
+        {% if score < 50 %}
+            Needs Improvement
+        {% elif score < 75 %}
+            Moderately Optimized
+        {% else %}
+            Strongly Optimized
+        {% endif %}
+    </p>
+
+</td>
+</tr>
+
+<tr>
+<td style="padding-top:25px;">
+    <p>Your resume is attached as a Word document (.docx).</p>
+    <p>You can edit, customize, and submit it directly to employers.</p>
+</td>
+</tr>
+
+<!-- FOOTER -->
+<tr>
+<td style="padding-top:30px;font-size:12px;color:#888;text-align:center;">
+    © 2026 JOB200 ATS Platform<br>
+    Powered by AI Resume Optimization Engine
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
