@@ -33,6 +33,7 @@ from .cv_generator import generate_and_optimize_cv
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from .word_generator import create_word_resume
 
 @shared_task
 def scan_resume_task(resume_id):
@@ -211,29 +212,58 @@ ATS Score: {resume.score}%
 @shared_task
 def generate_and_email_cv(data, job_description, user_email):
 
-    # 1️⃣ Generate Resume
-    cv_text, score = generate_and_optimize_cv(data, job_description)
+    # 1️⃣ Generate Resume (JSON structure)
+    resume_data, score = generate_and_optimize_cv(data, job_description)
 
     # 2️⃣ Create Word Document
     document = Document()
 
-    # Title
-    title = document.add_heading(data.get("name", "Resume"), level=1)
+    title = document.add_heading(data.get("name", "Resume"), level=0)
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     document.add_paragraph(f"ATS Optimization Score: {score}%")
-    document.add_paragraph("")
 
-    for line in cv_text.split("\n"):
-        document.add_paragraph(line)
+    # Summary
+    document.add_heading("Professional Summary", level=1)
+    document.add_paragraph(resume_data.get("summary", ""))
 
-    # Save file
+    # Experience
+    document.add_heading("Experience", level=1)
+    for exp in resume_data.get("experience", []):
+        document.add_paragraph(exp, style="List Bullet")
+
+    # Skills
+    document.add_heading("Skills", level=1)
+    for skill in resume_data.get("skills", []):
+        document.add_paragraph(skill, style="List Bullet")
+
+    # Education
+    document.add_heading("Education", level=1)
+    document.add_paragraph(resume_data.get("education", ""))
+
+    # Certifications
+    document.add_heading("Certifications", level=1)
+    for cert in resume_data.get("certifications", []):
+        document.add_paragraph(cert, style="List Bullet")
+
+    # Projects
+    document.add_heading("Projects", level=1)
+    for project in resume_data.get("projects", []):
+        document.add_paragraph(project, style="List Bullet")
+
+    # Achievements
+    document.add_heading("Achievements", level=1)
+    for ach in resume_data.get("achievements", []):
+        document.add_paragraph(ach, style="List Bullet")
+
+    # 3️⃣ Save Word file
     safe_name = data.get("name", "resume").replace(" ", "_")
     file_name = f"{safe_name}_resume.docx"
     file_path = os.path.join("/tmp", file_name)
+
     document.save(file_path)
 
-    # 3️⃣ Render HTML Email Template
+    # 4️⃣ Render Email Template
     html_content = render_to_string(
         "emails/resume_generated.html",
         {
@@ -242,19 +272,19 @@ def generate_and_email_cv(data, job_description, user_email):
         }
     )
 
-    # 4️⃣ Send Email
+    # 5️⃣ Send Email
     email = EmailMessage(
         subject="Your AI Resume is Ready - JOB200 ATS",
         body=html_content,
         to=[user_email],
     )
 
-    email.content_subtype = "html"  # 🔥 Makes email render as HTML
+    email.content_subtype = "html"
     email.attach_file(file_path)
 
     email.send()
 
-    # 5️⃣ Clean Up File
+    # 6️⃣ Clean up temp file
     if os.path.exists(file_path):
         os.remove(file_path)
 

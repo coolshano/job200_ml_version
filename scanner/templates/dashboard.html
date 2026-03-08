@@ -5,6 +5,18 @@
 
 <h1 class="title">Recruiter Dashboard</h1>
 
+<!-- TOP CANDIDATES -->
+<h3 class="section-title">Top Candidates by Job</h3>
+
+<div class="top-candidates">
+{% for t in top_candidates %}
+    <div class="candidate-card">
+        <strong>{{ t.job_title }}</strong><br>
+        {{ t.name }}<br>
+        Score: <b>{{ t.score }}%</b>
+    </div>
+{% endfor %}
+</div>
 
 <!-- FILTER BAR -->
 <form method="GET" class="filter-bar">
