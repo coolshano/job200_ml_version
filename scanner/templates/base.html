@@ -2,89 +2,162 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JOB200 ATS</title>
+<title>JOB200 ATS</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: "Segoe UI", Arial, sans-serif;
-            background: linear-gradient(135deg, #5f2c82, #8a2be2);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+<style>
 
-        /* HEADER */
-        .header {
-            background: white;
-            padding: 12px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #5f2c82, #8a2be2);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
 
-        .logo img {
-            height: 55px;
-        }
+/* HEADER */
 
-        .nav a {
-            margin-left: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            color: #6a0dad;
-        }
+.header {
+    background: white;
+    padding: 12px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
 
-        .nav a:hover {
-            color: #4b0082;
-        }
+.logo img {
+    height: 55px;
+}
 
-        /* CONTENT */
-        .container {
-            width: 900px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 14px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            flex: 1;
-        }
+/* NAVIGATION */
 
-        /* FOOTER */
-        .footer {
-            background: #4b0082;
-            color: white;
-            text-align: center;
-            padding: 15px;
-        }
-    </style>
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* BUTTON BASE */
+
+.btn {
+    position: relative;
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+/* PRIMARY BUTTON */
+
+.btn-primary {
+    background: #6a0dad;
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(106,13,173,0.4);
+}
+
+/* OUTLINE BUTTON */
+
+.btn-outline {
+    border: 2px solid #6a0dad;
+    color: #6a0dad;
+}
+
+.btn-outline:hover {
+    background: #6a0dad;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(106,13,173,0.3);
+}
+
+.logo img {
+    height: 55px;
+    transition: transform 0.2s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+/* SHINE ANIMATION */
+
+.btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,255,0.3);
+    transform: skewX(-25deg);
+    transition: 0.5s;
+}
+
+.btn:hover::before {
+    left: 130%;
+}
+
+/* CONTENT */
+
+.container {
+    width: 900px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 14px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    flex: 1;
+}
+
+/* FOOTER */
+
+.footer {
+    background: #4b0082;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+</style>
 </head>
 
 <body>
 
 <!-- HEADER -->
+
 <div class="header">
+
     <div class="logo">
+    <a href="https://job200.com/">
         <img src="{% static 'images/logo.jpeg' %}" alt="JOB200 Logo">
+    </a>
     </div>
-    <div>
-        
-    </div>
+
     <div class="nav">
-        <a href="/">Scan Resume</a>
-        <a href="{% url 'test_cv' %}">Create your free CV template</a>
+        <a href="/" class="btn btn-primary">Scan Resume</a>
+        <a href="{% url 'test_cv' %}" class="btn btn-outline">Create your free CV</a>
     </div>
+
 </div>
 
 <!-- CONTENT -->
+
 <div class="container">
-    {% block content %}
-    {% endblock %}
+{% block content %}
+{% endblock %}
 </div>
 
 <!-- FOOTER -->
+
 <div class="footer">
-    © 2026 JOB200 ATS Platform | 100% non-profit project
+© 2026 JOB200 ATS Platform | 100% non-profit project
 </div>
 
 </body>
